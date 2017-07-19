@@ -15,23 +15,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.opencv.core.Core;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
 
 /**
  *
  * @author Tuyu
  */
 public class VideoCap {
-
-    static {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
-
-    public void close() {
-        cap.release();
-    }
 
     class Point {
 
@@ -46,8 +35,6 @@ public class VideoCap {
 
     Random rand = new Random();
     int id = 0;
-    VideoCapture cap;
-    Mat2Image mat2Img = new Mat2Image();
     int warna = 0;
     int tres = 0;
 
@@ -57,10 +44,7 @@ public class VideoCap {
     int checked[][];
     Vector<Point> pointlist;
 
-    VideoCap() {
-        cap = new VideoCapture();
-//        cap.open(0);
-    }
+
 
     public BufferedImage getOneFrame(int tres, String location) {
         this.tres = tres;
@@ -70,10 +54,8 @@ public class VideoCap {
             } catch (IOException ex) {
                 Logger.getLogger(VideoCap.class.getName()).log(Level.SEVERE, null, ex);
             }
-        
         BufferedImage hasil = colorimage(img, tres);
-
-        return hasil;
+        return  hasil;
     }
 
     public BufferedImage colorimage(BufferedImage img, int treshold) {

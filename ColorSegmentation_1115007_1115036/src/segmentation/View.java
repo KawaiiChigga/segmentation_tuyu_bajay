@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,7 +21,7 @@ import javax.swing.JLabel;
  *
  * @author Sujana
  */
-public class View extends javax.swing.JFrame implements Runnable {
+public class View extends javax.swing.JFrame {
 
     /**
      * Creates new form Main
@@ -30,14 +32,16 @@ public class View extends javax.swing.JFrame implements Runnable {
     private String location = "";
 
     public View() {
-
+        videoCap = new VideoCap();
         initComponents();
         setTitle("Color Segmentation");
         prepare();
     }
 
     public void prepare() {
+
         location = "src/img/sample.jpg";
+
         btn_browse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,10 +51,17 @@ public class View extends javax.swing.JFrame implements Runnable {
                 int val = fileChooser.showOpenDialog(null);
                 if (val == JFileChooser.APPROVE_OPTION) {
                     location = fileChooser.getSelectedFile().getAbsolutePath();
+                    lbl_gambar.setIcon(new ImageIcon(videoCap.getOneFrame((int) spin_threshold.getValue(), location)));
                 }
             }
         });
-       
+        spin_threshold.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                lbl_gambar.setIcon(new ImageIcon(videoCap.getOneFrame((int) spin_threshold.getValue(), location)));
+            }
+        });
+
     }
 
     /**
@@ -98,8 +109,8 @@ public class View extends javax.swing.JFrame implements Runnable {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_browse)
                     .addComponent(jLabel2)
-                    .addComponent(spin_threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 63, Short.MAX_VALUE))
+                    .addComponent(spin_threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 47, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(274, 274, 274)
                 .addComponent(jLabel1)
@@ -126,15 +137,13 @@ public class View extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void spin_thresholdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_spin_thresholdKeyReleased
-        th = new Thread(this);
-        th.start();
-       
+
     }//GEN-LAST:event_spin_thresholdKeyReleased
 
     private void spin_thresholdStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spin_thresholdStateChanged
 
     }//GEN-LAST:event_spin_thresholdStateChanged
-    
+
     /**
      * @param args the command line arguments
      */
@@ -179,18 +188,4 @@ public class View extends javax.swing.JFrame implements Runnable {
     private javax.swing.JSpinner spin_threshold;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void run() {
-        while (true) {
-            repaint();
-            try {
-                int t = (int) spin_threshold.getValue();
-                imgFrame = new ImageIcon(videoCap.getOneFrame(t, location));
-                Thread.sleep(500);
-            } catch (Exception e) {
-            }
-        throw new UnsupportedOperationException("Not supported yet.");
-         
-        }//To change body of generated methods, choose Tools | Templates.
-    }
 }
