@@ -24,6 +24,7 @@ public class View extends javax.swing.JFrame implements Runnable {
     /**
      * Creates new form Main
      */
+    private ImageIcon imgFrame;
     VideoCap videoCap;
     Thread th;
     private String location = "";
@@ -33,8 +34,6 @@ public class View extends javax.swing.JFrame implements Runnable {
         initComponents();
         setTitle("Color Segmentation");
         prepare();
-        th = new Thread(this);
-        th.start();
     }
 
     public void prepare() {
@@ -51,7 +50,7 @@ public class View extends javax.swing.JFrame implements Runnable {
                 }
             }
         });
-        spin_threshold.setValue(50);
+       
     }
 
     /**
@@ -97,12 +96,10 @@ public class View extends javax.swing.JFrame implements Runnable {
                 .addComponent(lbl_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_browse)
-                            .addComponent(jLabel2))
-                        .addGap(0, 126, Short.MAX_VALUE))
-                    .addComponent(spin_threshold)))
+                    .addComponent(btn_browse)
+                    .addComponent(jLabel2)
+                    .addComponent(spin_threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 63, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(274, 274, 274)
                 .addComponent(jLabel1)
@@ -129,20 +126,15 @@ public class View extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void spin_thresholdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_spin_thresholdKeyReleased
-        while (true) {
-            repaint();
-            try {
-                int t = (int) spin_threshold.getValue();
-                Thread.sleep(500);
-            } catch (Exception e) {
-            }
-        }
+        th = new Thread(this);
+        th.start();
+       
     }//GEN-LAST:event_spin_thresholdKeyReleased
 
     private void spin_thresholdStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spin_thresholdStateChanged
 
     }//GEN-LAST:event_spin_thresholdStateChanged
-
+    
     /**
      * @param args the command line arguments
      */
@@ -189,6 +181,16 @@ public class View extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        while (true) {
+            repaint();
+            try {
+                int t = (int) spin_threshold.getValue();
+                imgFrame = new ImageIcon(videoCap.getOneFrame(t, location));
+                Thread.sleep(500);
+            } catch (Exception e) {
+            }
+        throw new UnsupportedOperationException("Not supported yet.");
+         
+        }//To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -62,21 +62,15 @@ public class VideoCap {
 //        cap.open(0);
     }
 
-    public BufferedImage getOneFrame(int tres, String location, int cam, int mode) {
+    public BufferedImage getOneFrame(int tres, String location) {
         this.tres = tres;
         BufferedImage img = null;
-        if (cam == 1) {
-            cap.open(0);
-            cap.read(mat2Img.mat);
-            Imgproc.cvtColor(mat2Img.mat, mat2Img.mat, Imgproc.COLOR_BGR2RGB);
-            img = mat2Img.getImage(mat2Img.mat);
-        } else {
             try {
                 img = ImageIO.read(new File(location));
             } catch (IOException ex) {
                 Logger.getLogger(VideoCap.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        
         BufferedImage hasil = colorimage(img, tres);
 
         return hasil;
