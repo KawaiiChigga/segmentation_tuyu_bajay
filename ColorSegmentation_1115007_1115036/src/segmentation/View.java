@@ -1,22 +1,57 @@
 package segmentation;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Sujana
  */
-public class View extends javax.swing.JFrame {
+public class View extends javax.swing.JFrame implements Runnable {
 
     /**
      * Creates new form Main
      */
+    VideoCap videoCap;
+    Thread th;
+    private String location = "";
+
     public View() {
+
         initComponents();
+        setTitle("Color Segmentation");
+        prepare();
+        th = new Thread(this);
+        th.start();
+    }
+
+    public void prepare() {
+        location = "src/img/sample.jpg";
+        btn_browse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                int val = fileChooser.showOpenDialog(null);
+                if (val == JFileChooser.APPROVE_OPTION) {
+                    location = fileChooser.getSelectedFile().getAbsolutePath();
+                }
+            }
+        });
+        spin_threshold.setValue(50);
     }
 
     /**
@@ -30,33 +65,47 @@ public class View extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         lbl_gambar = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        spin_threshold = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
+        btn_browse = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Color Segmentation");
 
+        spin_threshold.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spin_thresholdStateChanged(evt);
+            }
+        });
+        spin_threshold.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                spin_thresholdKeyReleased(evt);
+            }
+        });
+
         jLabel2.setText("Threshold");
+
+        btn_browse.setText("browse");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(lbl_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(274, 274, 274)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(lbl_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSpinner1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 113, Short.MAX_VALUE)))))
+                            .addComponent(btn_browse)
+                            .addComponent(jLabel2))
+                        .addGap(0, 126, Short.MAX_VALUE))
+                    .addComponent(spin_threshold)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(274, 274, 274)
+                .addComponent(jLabel1)
                 .addGap(33, 33, 33))
         );
         layout.setVerticalGroup(
@@ -64,20 +113,35 @@ public class View extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbl_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
+                        .addComponent(btn_browse)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(spin_threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void spin_thresholdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_spin_thresholdKeyReleased
+        while (true) {
+            repaint();
+            try {
+                int t = (int) spin_threshold.getValue();
+                Thread.sleep(500);
+            } catch (Exception e) {
+            }
+        }
+    }//GEN-LAST:event_spin_thresholdKeyReleased
+
+    private void spin_thresholdStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spin_thresholdStateChanged
+
+    }//GEN-LAST:event_spin_thresholdStateChanged
 
     /**
      * @param args the command line arguments
@@ -116,9 +180,15 @@ public class View extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_browse;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JLabel lbl_gambar;
+    private javax.swing.JSpinner spin_threshold;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
